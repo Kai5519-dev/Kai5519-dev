@@ -1,0 +1,62 @@
+-- Tải thư viện Rayfield UI
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+-- Tạo cửa sổ chính
+local Window = Rayfield:CreateWindow({
+   Name = "Fluxus Rayfield Menu Test",
+   LoadingTitle = "Đang tải menu...",
+   LoadingSubtitle = "bởi bạn",
+   ConfigurationSaving = {
+      Enabled = false,
+   },
+   Discord = {
+      Enabled = false,
+   },
+   KeySystem = false,
+})
+
+-- Tạo tab
+local MainTab = Window:CreateTab("Menu Chính", 4483362458) -- icon ID bất kỳ
+
+-- Tạo nút test executor
+MainTab:CreateButton({
+   Name = "Test Executor (in console)",
+   Callback = function()
+      print("Fluxus executor hoạt động thành công!")
+      Rayfield:Notify({
+         Title = "Thông báo",
+         Content = "Đã chạy lệnh test!",
+         Duration = 3,
+         Image = 4483362458,
+      })
+   end,
+})
+
+-- Tạo một toggle
+MainTab:CreateToggle({
+   Name = "Bật tốc độ nhanh",
+   CurrentValue = false,
+   Callback = function(Value)
+      if Value then
+         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+      else
+         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+      end
+   end,
+})
+
+-- Tạo một textbox
+MainTab:CreateInput({
+   Name = "Teleport đến vị trí X, Y, Z",
+   PlaceholderText = "Ví dụ: 0,10,0",
+   RemoveTextAfterFocusLost = true,
+   Callback = function(Text)
+      local coords = string.split(Text, ",")
+      if #coords == 3 then
+         local x = tonumber(coords[1])
+         local y = tonumber(coords[2])
+         local z = tonumber(coords[3])
+         game.Players.LocalPlayer.Character:MoveTo(Vector3.new(x, y, z))
+      end
+   end,
+})
