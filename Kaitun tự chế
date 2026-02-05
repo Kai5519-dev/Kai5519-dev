@@ -1,0 +1,818 @@
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+
+--[[
+════════════════════════════════════════════════════════════════════
+    BLOX FRUITS ULTIMATE KAITUN - UPDATE 29
+    ✓ LOGIC ĐÚNG - Không lấy item sai Sea
+    ✓ AUTO SMART - Thiếu gì tự farm nấy
+    ✓ 100% AFK Level 1 → 2800 + ALL ITEMS
+════════════════════════════════════════════════════════════════════
+--]]
+
+getgenv().Config = {
+
+-- ═══════════════════════════════════════════════════════════════
+-- CORE
+-- ═══════════════════════════════════════════════════════════════
+FastAttack = true,
+BringMob = true,
+KillAura = true,
+WhiteScreen = true,
+FPSBoost = true,
+AntiAFK = true,
+AutoRejoin = true,
+
+-- ═══════════════════════════════════════════════════════════════
+-- PROGRESSION SYSTEM - VỪA FARM VỪA LẤY ITEM
+-- ═══════════════════════════════════════════════════════════════
+
+-- ══════════════════════════════════════════════════════════════
+-- SEA 1 (LEVEL 1 - 700)
+-- ══════════════════════════════════════════════════════════════
+Sea1 = {
+    Enable = true,
+    FarmTo = 700,
+    
+    -- FIGHTING STYLES
+    FightingStyles = {
+        -- Level 1: Combat (Default - đã có sẵn)
+        
+        -- Level 150+
+        {
+            Name = "Dark Step",
+            Level = 150,
+            Location = "Pirate Village",
+            Cost = 150000,
+            AutoBuy = {
+                Enable = true,
+                FarmMoneyIf = "NotEnough", -- Thiếu tiền → Farm level để kiếm tiền
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400, -- Cần cho Death Step
+                FarmAfterGet = true,
+            },
+        },
+        
+        {
+            Name = "Electro",
+            Level = 150,
+            Location = "Skylands - Lab",
+            Cost = 500000,
+            AutoBuy = {
+                Enable = true,
+                FarmMoneyIf = "NotEnough",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400, -- Cần cho Electric Claw
+            },
+        },
+        
+        -- Level 300+
+        {
+            Name = "Water Kung Fu",
+            Level = 300,
+            Location = "Forgotten Island",
+            Cost = 750000,
+            AutoBuy = {
+                Enable = true,
+                FarmMoneyIf = "NotEnough",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400, -- Cần cho Sharkman Karate
+            },
+        },
+        
+        {
+            Name = "Dragon Breath",
+            Level = 300,
+            Location = "Blox Fruit Dealer Cousin",
+            Cost = 1500, -- Fragments
+            AutoBuy = {
+                Enable = true,
+                FarmFragmentsIf = "NotEnough", -- Thiếu fragments → Raid
+                RaidType = "Easiest", -- Flame/Ice
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400, -- Cần cho Dragon Talon
+            },
+        },
+        
+        -- Level 300 + Requirements
+        {
+            Name = "Superhuman",
+            Level = 300,
+            Requirements = {
+                DarkStep = 300,
+                Electro = 300,
+                WaterKungFu = 300,
+                DragonBreath = 300,
+            },
+            Cost = 3000000,
+            AutoBuy = {
+                Enable = true,
+                CheckRequirements = true, -- Check mastery trước
+                FarmMasteryIf = "NotEnough", -- Thiếu mastery → Farm mastery
+                FarmMoneyIf = "NotEnough",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 300, -- Cần cho Godhuman
+            },
+        },
+    },
+    
+    -- SWORDS
+    Swords = {
+        -- Level 200
+        {
+            Name = "Saber",
+            Level = 200,
+            Steps = {
+                {Action = "GoTo", Location = "Jungle - Hidden Path"},
+                {Action = "Boss", Name = "Saber Expert"},
+            },
+            Mastery = {
+                Enable = true,
+                Target = 300,
+            },
+        },
+        
+        -- Level 300
+        {
+            Name = "Pole V1",
+            Level = 300,
+            Steps = {
+                {Action = "FindBoss", Name = "Thunder God", HopFind = true, Chance = "20%"},
+                {Action = "KillBoss", Name = "Thunder God"},
+            },
+            Mastery = {
+                Enable = true,
+                Target = 300,
+            },
+        },
+    },
+},
+
+-- ══════════════════════════════════════════════════════════════
+-- QUEST TO SEA 2 (Khi đạt Level 700)
+-- ══════════════════════════════════════════════════════════════
+QuestSea2 = {
+    Enable = true,
+    RequireLevel = 700,
+    
+    Steps = {
+        {
+            Name = "Step 1: King's Throne",
+            Action = "Interact",
+            Location = "King's Throne - Castle",
+        },
+        {
+            Name = "Step 2: Thunder God",
+            Action = "Boss",
+            Boss = "Thunder God",
+            Location = "Upper Skylands",
+            HopFind = true,
+            MaxHopTime = 300,
+        },
+        {
+            Name = "Step 3: Library Key",
+            Action = "GetItem",
+            Location = "Library - Hidden",
+        },
+        {
+            Name = "Step 4: Enter New World",
+            Action = "Portal",
+            Location = "Middle Town - Dock",
+        },
+    },
+    
+    -- Block mọi task khác khi làm quest qua Sea
+    BlockOtherTasks = true,
+},
+
+-- ══════════════════════════════════════════════════════════════
+-- SEA 2 (LEVEL 700 - 1500)
+-- ══════════════════════════════════════════════════════════════
+Sea2 = {
+    Enable = true,
+    FarmFrom = 700,
+    FarmTo = 1500,
+    
+    -- RACE
+    Race = {
+        {
+            Name = "Race V2",
+            Level = 850,
+            Quest = "Colosseum",
+            Steps = {
+                {Action = "FindArowe", HopFind = true},
+                {Action = "CompleteQuest"},
+            },
+        },
+        
+        {
+            Name = "Race V3",
+            Level = 1000,
+            Requirements = {RaceV2 = true},
+            Quest = "Arowe Flower Quest",
+            Steps = {
+                {Action = "Kill", Target = "Don Swan", Count = 1},
+                {Action = "Kill", Target = "Jeremy", Count = 1},
+                {Action = "Kill", Target = "Diamond", Count = 1},
+            },
+            HopFind = true,
+        },
+    },
+    
+    -- FIGHTING STYLES V2
+    FightingStyles = {
+        -- Level 1000+
+        {
+            Name = "Death Step",
+            Level = 1000,
+            Location = "Ice Castle",
+            Requirements = {
+                DarkStep = 400,
+                LibraryKey = true, -- From Awakened Ice Admiral
+            },
+            Cost = 2500000,
+            Materials = {
+                Ectoplasm = 20,
+            },
+            AutoGet = {
+                Enable = true,
+                FarmMasteryIf = "NotEnough",
+                FarmMaterialsIf = "NotEnough",
+                KillBoss = "Awakened Ice Admiral", -- For Library Key
+                HopFind = true,
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400, -- Cần cho Godhuman
+            },
+        },
+        
+        {
+            Name = "Sharkman Karate",
+            Level = 1000,
+            Location = "Forgotten Island",
+            Requirements = {
+                WaterKungFu = 400,
+            },
+            Cost = 2500000,
+            Materials = {
+                FishTail = 20,
+            },
+            AutoGet = {
+                Enable = true,
+                FarmMaterialsIf = "NotEnough",
+                FarmLocation = "Fishman Quest",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400,
+            },
+        },
+        
+        {
+            Name = "Electric Claw",
+            Level = 1000,
+            Location = "Skylands",
+            Requirements = {
+                Electro = 400,
+            },
+            Cost = 3000000,
+            Materials = {
+                RadioactiveMaterial = 20,
+            },
+            AutoGet = {
+                Enable = true,
+                FarmMaterialsIf = "NotEnough",
+                FarmLocation = "Factory",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400,
+            },
+        },
+        
+        {
+            Name = "Dragon Talon",
+            Level = 1000,
+            Location = "Hydra Island",
+            Requirements = {
+                DragonBreath = 400,
+            },
+            Cost = 3000000,
+            Materials = {
+                DragonScale = 20,
+                MagmaOre = 20,
+            },
+            AutoGet = {
+                Enable = true,
+                FarmMaterialsIf = "NotEnough",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 400,
+            },
+        },
+    },
+    
+    -- SWORDS
+    Swords = {
+        {
+            Name = "Rengoku",
+            Level = 1000,
+            Steps = {
+                {Action = "GetKey", From = "Awakened Ice Admiral", HopFind = true},
+                {Action = "OpenChest", Location = "Secret Room"},
+            },
+            Mastery = {Target = 400},
+        },
+        
+        {
+            Name = "Wando",
+            Level = 1000,
+            Cost = 3000000,
+            Location = "Second Sea - Shop",
+        },
+        
+        {
+            Name = "Canvander",
+            Level = 1000,
+            Cost = 3000000,
+            Location = "Second Sea - Shop",
+        },
+        
+        {
+            Name = "Shisui",
+            Level = 1100,
+            Cost = 2000000,
+            Location = "Legendary Sword Dealer",
+            HopFind = true,
+        },
+        
+        {
+            Name = "Midnight Blade",
+            Level = 1100,
+            Steps = {
+                {Action = "Complete", Quest = "Factory Quest"},
+            },
+        },
+    },
+},
+
+-- ══════════════════════════════════════════════════════════════
+-- QUEST TO SEA 3 (Khi đạt Level 1500)
+-- ══════════════════════════════════════════════════════════════
+QuestSea3 = {
+    Enable = true,
+    RequireLevel = 1500,
+    
+    Steps = {
+        {
+            Name = "Step 1: Mansion Quest",
+            Action = "Quest",
+            Location = "Mansion - Haunted Castle",
+        },
+        {
+            Name = "Step 2: Don Swan",
+            Action = "Boss",
+            Boss = "Don Swan",
+            Location = "Random Spawn",
+            HopFind = true,
+            MaxHopTime = 300,
+        },
+        {
+            Name = "Step 3: King Red Head",
+            Action = "Boss",
+            Boss = "King Red Head",
+        },
+        {
+            Name = "Step 4: Enter Third Sea",
+            Action = "Portal",
+        },
+    },
+    
+    BlockOtherTasks = true,
+},
+
+-- ══════════════════════════════════════════════════════════════
+-- SEA 3 (LEVEL 1500 - 2800)
+-- ══════════════════════════════════════════════════════════════
+Sea3 = {
+    Enable = true,
+    FarmFrom = 1500,
+    FarmTo = 2800,
+    
+    -- FIGHTING STYLES
+    FightingStyles = {
+        -- Level 2000+
+        {
+            Name = "Godhuman",
+            Level = 2000,
+            Location = "Floating Turtle - Hidden Door",
+            Requirements = {
+                Superhuman = 300,
+                DeathStep = 400,
+                SharkmanKarate = 400,
+                ElectricClaw = 400,
+                DragonTalon = 400,
+            },
+            Cost = {
+                Beli = 5000000,
+                Fragments = 5000,
+            },
+            Materials = {
+                FishTail = 20,
+                MagmaOre = 20,
+                DragonScale = 10,
+                MysticDroplet = 10,
+            },
+            AutoGet = {
+                Enable = true,
+                CheckAllRequirements = true,
+                FarmMasteryIf = "NotEnough", -- Farm hết mastery trước
+                FarmMaterialsIf = "NotEnough",
+                FarmFragmentsIf = "NotEnough", -- Raid
+                FarmMoneyIf = "NotEnough",
+            },
+            Mastery = {
+                Enable = true,
+                Target = 600,
+            },
+        },
+        
+        -- Level 2550+
+        {
+            Name = "Sanguine Art",
+            Level = 2550,
+            Location = "Floating Turtle - Shafi",
+            Requirements = {
+                Godhuman = 400,
+            },
+            Materials = {
+                LeviathanHeart = 1, -- From Leviathan Boss
+                DarkFragments = 2,
+                DemonicWisps = 20, -- From Soul Reaper
+                VampireFangs = 20,
+            },
+            Steps = {
+                {Action = "GetBoat", Name = "Beast Hunter", Materials = {LeviathanScale = 20}},
+                {Action = "KillBoss", Name = "Leviathan", UseHarpoon = true, HopFind = true},
+                {Action = "KillBoss", Name = "Soul Reaper", HopFind = true},
+                {Action = "FarmMob", Name = "Vampires", Location = "Graveyard Sea 2"},
+            },
+            AutoGet = {
+                Enable = true,
+                AutoComplete = true,
+            },
+            Mastery = {
+                Enable = true,
+                Target = 600,
+            },
+        },
+    },
+    
+    -- LEGENDARY SWORDS
+    Swords = {
+        -- Level 1700+
+        {
+            Name = "Yama",
+            Level = 1700,
+            Steps = {
+                {Action = "Kill", Target = "Elite Pirates", Count = 30, HopFind = true},
+            },
+            Mastery = {Target = 400},
+        },
+        
+        -- Level 1850+
+        {
+            Name = "Spiky Trident",
+            Level = 1850,
+            Steps = {
+                {Action = "KillBoss", Name = "Fishman Lord", HopFind = true},
+            },
+            Mastery = {Target = 600},
+        },
+        
+        -- Level 2000+
+        {
+            Name = "Tushita",
+            Level = 2000,
+            Steps = {
+                {Action = "KillBoss", Name = "Longma", HopFind = true},
+                {Action = "KillBoss", Name = "rip_indra", HopFind = true},
+                {Action = "Puzzle", Name = "Holy Torch"},
+                {Action = "Puzzle", Name = "Final Puzzle"},
+            },
+            Mastery = {Target = 400},
+        },
+        
+        {
+            Name = "True Triple Katana",
+            Level = 2000,
+            Cost = 2000000,
+            Steps = {
+                {Action = "Collect", Item = "Legendary Relics", Count = 3, HopFind = true},
+                {Action = "Puzzle", Name = "Ancient Ruins"},
+            },
+            Mastery = {Target = 600},
+        },
+        
+        -- Level 2200+
+        {
+            Name = "Cursed Dual Katana",
+            Level = 2200,
+            Requirements = {
+                Yama = 400,
+                Tushita = 400,
+            },
+            Steps = {
+                {Action = "Buy", Item = "Haki Color", Cost = 5000000, Fragments = 5000},
+                {Action = "Puzzle", Name = "Tushita Shrine", Count = 5, HopFind = true},
+            },
+            AutoGet = {
+                Enable = true,
+                FarmMasteryIf = "NotEnough", -- Farm Yama + Tushita mastery trước
+                FarmFragmentsIf = "NotEnough",
+                FarmMoneyIf = "NotEnough",
+            },
+            Mastery = {Target = 600},
+        },
+        
+        -- Level 2300+
+        {
+            Name = "Soul Guitar",
+            Level = 2300,
+            Steps = {
+                {Action = "Farm", Item = "Bones", Amount = 500},
+                {Action = "Find", Target = "Ghost NPCs", Count = 5, HopFind = true},
+                {Action = "Puzzle", Name = "Soul Guitar Puzzle"},
+            },
+            AutoGet = {
+                Enable = true,
+                AutoFarmBones = true,
+                HopFindGhosts = true,
+            },
+            Mastery = {Target = 600},
+        },
+        
+        -- Level 2400+
+        {
+            Name = "Dark Blade",
+            Level = 2400,
+            Steps = {
+                {Action = "KillBoss", Name = "Admin Boss", Rare = true, HopFind = true, MaxWaitTime = 600},
+            },
+            Mastery = {Target = 600},
+        },
+        
+        -- Upgrades
+        {
+            Name = "Saber V2",
+            Level = 1500,
+            Requirements = {SaberV1 = true},
+            Steps = {
+                {Action = "Quest", Location = "Jungle Secret Path"},
+            },
+        },
+        
+        {
+            Name = "Pole V2",
+            Level = 1500,
+            Requirements = {PoleV1 = true},
+            Steps = {
+                {Action = "Quest", Location = "Thunder Island"},
+            },
+        },
+    },
+    
+    -- RACE V4
+    RaceV4 = {
+        Enable = true,
+        StartLevel = 2100,
+        
+        Steps = {
+            -- Step 1: Mirror Fractal
+            {
+                Name = "Get Mirror Fractal",
+                Methods = {
+                    {
+                        Boss = "Dough King",
+                        Requirements = {
+                            ConjuredCocoa = 10,
+                            GodChalice = 1, -- Auto craft từ materials
+                        },
+                        AutoFarm = {
+                            Cocoa = true,
+                            Materials = {
+                                RedFlower = 3,
+                                BlueFlower = 3,
+                                YellowFlower = 1,
+                            },
+                        },
+                        HopFind = true,
+                        SpawnInterval = 360, -- 6 phút
+                    },
+                },
+            },
+            
+            -- Step 2: Mirage Island
+            {
+                Name = "Find Mirage Island",
+                CheckFullMoon = true,
+                HopFind = true,
+                MaxHopTime = 180,
+            },
+            
+            -- Step 3: Blue Gear
+            {
+                Name = "Get Blue Gear",
+                Location = "Mirage Island - Temple",
+                AutoLever = true,
+            },
+            
+            -- Step 4: Valkyrie Helmet
+            {
+                Name = "Get Valkyrie Helmet",
+                Boss = "rip_indra True Form",
+                HopFind = true,
+            },
+            
+            -- Step 5: Unlock Door
+            {
+                Name = "Unlock Gear Temple Door",
+                Requirements = {
+                    MirrorFractal = true,
+                    BlueGear = true,
+                    ValkyrieHelmet = true,
+                },
+                WaitFullMoon = true,
+            },
+            
+            -- Step 6: Complete Trial
+            {
+                Name = "Complete Trial",
+                Mode = "Safe",
+                AutoRetry = true,
+                MaxRetries = 50,
+            },
+            
+            -- Step 7: Farm Additional Gears
+            {
+                Name = "Farm Gears",
+                Target = {Red = 1, Black = 1},
+                Boss = "Ancient One",
+                HopFind = true,
+            },
+        },
+    },
+},
+
+-- ═══════════════════════════════════════════════════════════════
+-- AUTO SYSTEMS
+-- ═══════════════════════════════════════════════════════════════
+
+-- AUTO STATS
+AutoStats = {
+    Enable = true,
+    Distribution = {
+        Melee = 2,
+        Defense = 1,
+        Sword = 1,
+        Gun = 0,
+        Fruit = 0,
+    },
+},
+
+-- AUTO RAID (Khi cần Fragments)
+AutoRaid = {
+    Enable = true,
+    
+    Triggers = {
+        NeedFragments = true, -- Khi cần mua gì đó bằng fragments
+        NeedAwakening = true, -- Khi có fruit cần awaken
+    },
+    
+    Select = "Dough", -- Hoặc fruit hiện tại
+    AutoBuyChip = true,
+    AutoStart = true,
+    FastComplete = true,
+    
+    AutoAwaken = {
+        Enable = true,
+        Fruits = {"Dough", "Rumble", "Buddha", "Phoenix"},
+        AwakeAll = true,
+    },
+},
+
+-- AUTO FARM MATERIALS (Khi cần)
+AutoMaterials = {
+    Enable = true,
+    
+    OnlyWhenNeeded = true, -- Chỉ farm khi cần cho quest
+    
+    Targets = {
+        Bone = 500,
+        Ectoplasm = 50,
+        FishTail = 50,
+        DragonScale = 50,
+        MagmaOre = 50,
+        MysticDroplet = 50,
+        RadioactiveMaterial = 50,
+        VampireFangs = 50,
+        DemonicWisps = 50,
+        LeviathanScale = 50,
+        ConjuredCocoa = 20,
+    },
+    
+    HopIfLow = true,
+},
+
+-- AUTO FRUIT
+AutoFruit = {
+    AutoSnipe = {
+        Enable = true,
+        HopSnipe = true,
+        Priority = {
+            "Kitsune", "Dragon", "Leopard", "Control", "Dough",
+            "T-Rex", "Spirit", "Venom", "Shadow",
+        },
+    },
+    
+    AutoStore = {
+        Enable = true,
+        MaxSlots = 20,
+        DropWorst = true,
+    },
+    
+    AutoEat = {
+        Enable = true,
+        OnlyBest = true,
+    },
+},
+
+-- SERVER HOP
+ServerHop = {
+    Enable = true,
+    
+    Conditions = {
+        NoBossFor = 300,
+        NoItemFor = 600,
+        TargetNotFound = true,
+    },
+    
+    DontHopWhen = {
+        InCombat = true,
+        InDungeon = true,
+        NearComplete = true,
+    },
+},
+
+-- WEBHOOK
+Webhook = {
+    Enable = false,
+    URL = "",
+    
+    Notify = {
+        Level1000 = true,
+        Level2000 = true,
+        MaxLevel = true,
+        CDK = true,
+        SoulGuitar = true,
+        Godhuman = true,
+        SanguineArt = true,
+        RaceV4 = true,
+        LegendFruit = true,
+    },
+},
+
+-- PERFORMANCE
+Performance = {
+    WhiteScreen = true,
+    FPS = 60,
+    FPSBoost = true,
+    RemoveTextures = true,
+    RemoveVFX = true,
+},
+
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- LOAD
+-- ═══════════════════════════════════════════════════════════════
+
+print("╔═══════════════════════════════════════════════════════════╗")
+print("║   BLOX FRUITS ULTIMATE KAITUN - UPDATE 29                ║")
+print("║   ✅ LOGIC ĐÚNG - Items theo đúng Sea                    ║")
+print("║   ✅ AUTO SMART - Thiếu gì tự farm nấy                   ║")
+print("║   ✅ 100% AFK - Ngủ dậy ALL MAX                          ║")
+print("╚═══════════════════════════════════════════════════════════╝")
+
+loadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/8cffffd967953fe7"))()
